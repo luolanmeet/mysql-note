@@ -7,4 +7,5 @@
   * [一些术语](content/MySQL体系结构和存储引擎/一些术语.md)
 * [InnoDB存储引擎](content/InnoDB存储引擎.md)
   * [InnoDB关键特性](content/InnoDB存储引擎/InnoDB关键特性.md)
+    * [插入缓冲](content/InnoDB存储引擎/InnoDB关键特性/插入缓冲.md)
 

@@ -14,28 +14,6 @@
 
 > 可以通过 `SHOW ENGINES\G` 语句查看当前数据库支持的所有存储引擎。
 
-#### 几个概念
-
-* `OLAP`数据库、`OLTP`数据库
-
-  > 数据处理大致可以分成两大类：
-  >
-  > * 在线事务处理`OLTP`（`Online Transaction Processing`）
-  >
-  > * 在线分析处理`OLAP`（`Online Analytical Processing`）
-  >
-  > `OLTP`是传统的关系型数据库的主要应用，主要是基本的、日常的事务处理，例如银行交易。
-  >
-  > `OLAP`是数据仓库系统的主要应用，支持复杂的分析操作，侧重决策支持，并且提供直观易懂的查询结果。
-
-* `ETL`
-
-  > `ETL`是英文`Extract-Transform-Load`的缩写，用来描述将数据从来源端经过
-  >
-  > 抽取（`extract`）、转换（`transform`）、加载（`load`）至目的端的过程。
-
-
-
 #### InnoDB存储引擎
 
 `InnoDB`存储引擎支持事务、行锁、外键，并支持类似于`Oracle`的非锁定读，
