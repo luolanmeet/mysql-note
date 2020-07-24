@@ -87,3 +87,55 @@ InnoDB存储引擎中实现了如下两种标准的<span style="border-bottom:2p
 > 读取最新一份快照数据。
 >
 > 在`REPEATABLE READ`事务隔离级别下，读取的是事务开始时的行数据版本。
+
+
+
+##### 一致性锁定读
+
+某些时候需要显示地对数据库读取操作进行加锁以保证数据逻辑的一致性。
+
+`InnoDB`存储引擎对于`SELECT`支持两种一致性的锁定读（`locking read`）
+
+* SELECT ... FOR UPDATE：加`X`锁
+* SELECT ... LOCK IN SHARE MODE：加`S`锁
+
+> 无论是哪种，都需要在一个事务中，当事务提交了，锁也就释放了。
+>
+> 因此在使用时需要加上`BEGIN`、`START TRANSACTION`或者是`SET AUTOCOMMIT=0`
+
+
+
+##### 自增长与锁
+
+在`InnoDB`存储引擎的内存结构中，对每个含有自增长值的表都会一个自增长计数器
+
+（`auto-increment counter`）。当对含有自增长的计数器的表进行插入操作时，这个
+
+计数器会初始化，并执行如下语句获取计数器的值
+
+```SQL
+SELECT MAX(auto_inc_col) FROM t FRO UPDATE
+```
+
+插入操作会依据这个自增长的计数器的值加1赋予自增长列。这种方式称为
+
+`AUTO-INC Locking`。这种锁采用一种特殊的<span style="border-bottom:2px dashed yellow;">表锁机制</span>，为了提高插入的性能，
+
+<span style="border-bottom:2px dashed yellow;">锁不在一个事务完成后才释放，而是在完成对自增长值插入的`SQL`语句后立即释放。</span>
+
+虽然`AUTO-INC-Locking`从一定程度上提高了并发插入的效率，但还是有性能还是较差。
+
+`MySQL5.1.22`版本开始，`InnoDB`存储引擎提供了一种轻量级互斥量的自增长实现机制，
+
+并提供了一个`innodb_autoinc_lock_mode`来控制自增长的模式，默认值是1。
+
+
+
+`innodb_autoinc_lock_mode`值说明
+
+| innodb_autoinc_lock_mode | 说明                                                         |
+| ------------------------ | ------------------------------------------------------------ |
+| 0                        | `MySQL5.1.22`版本之前自增长的实现模式，通过表锁`AUTO-INC Locking`方式 |
+| 1                        | 默认值。对于`simple inserts`，使用互斥量（`mutex`）去对内存中的计数器<br />进行累加操作。对于`bulk inserts`还是使用传统表锁。 |
+| 2                        | 对于所有`insert-like`自增长值的产生都通过互斥量，而不是`AUTO-INC Locking`方式<br />但是有一定问题，并发插入时，自增长id可能不是连续的。<br />基于`Statement-Base Replication`会出现问题。因此使用这个模式<br />任何时候都应该使用`Row-Base Replication`。这样才能保证主从数据一致。 |
+
