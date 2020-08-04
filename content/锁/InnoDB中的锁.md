@@ -80,7 +80,7 @@ InnoDB存储引擎中实现了如下两种标准的<span style="border-bottom:2p
 
 > 在事务隔离级别`READ COMMITTED`和`REPEATABLE READ`（默认），`InnoDB`存储引擎
 >
-> 使用非锁定的一致性读。
+> 使用非锁定的一致性读。（mvcc）
 >
 > 但在`READ COMMITTED`事务隔离级别下，总是读取行的最新版本，如果行被锁定了，
 >
