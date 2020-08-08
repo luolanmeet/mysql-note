@@ -36,7 +36,7 @@ InnoDB存储引擎是多线程的模型，因此其后台有多个不同的后�
 
   > SHOW VARIABLES LIKE "innodb_purge_threads";
 
-* `Purge Cleaner Thread`
+* `Page Cleaner Thread`
 
   `InnoDB 1.2.x`引入的，作用是将之前版本中脏页刷新操作都放到独立的线程中完成。
 
@@ -111,3 +111,6 @@ InnoDB存储引擎是多线程的模型，因此其后台有多个不同的后�
 上的页的数据产生不一致。这是数据库会通过`Checkpoint`机制将脏页刷新回磁盘。
 
 而`Flush`列表中的页即为脏页列表。脏页既存在于`LRU`列表，也存在与`Flush`列表中。
+
+
+
