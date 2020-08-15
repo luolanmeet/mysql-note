@@ -17,6 +17,8 @@
 * [文件](content/文件.md)
   * [参数文件](content/文件/参数文件.md)
   * [日志文件](content/文件/日志文件.md)
+  * [表结构定义文件](content/文件/表结构定义文件.md)
+  * [InnoDB存储引擎文件](content/文件/InnoDB存储引擎文件.md)
 * [锁](content/锁.md)
   * [InnoDB中的锁](content/锁/InnoDB中的锁.md)
   * [锁的算法](content/锁/锁的算法.md)
