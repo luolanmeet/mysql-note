@@ -26,6 +26,8 @@
   * [InnoDB数据页结构](content/表/InnoDB数据页结构.md)
   * [分区表](content/表/分区表.md)
 * [索引与算法](content/索引与算法.md)
+  * [B+树索引](content/索引与算法/B+树索引.md)
+  * [Cardinality值](content/索引与算法/Cardinality值.md)
 * [锁](content/锁.md)
   * [InnoDB中的锁](content/锁/InnoDB中的锁.md)
   * [锁的算法](content/锁/锁的算法.md)
