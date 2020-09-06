@@ -1,0 +1,712 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>锁问题 · mysql笔记</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="chenken">
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-chapter-fold/chapter-fold.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../../styles/website.css">
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="锁的算法.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        <li class="header">🐬MySQL</li>
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    前言
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../MySQL体系结构和存储引擎.html">
+            
+                <a href="../MySQL体系结构和存储引擎.html">
+            
+                    
+                    MySQL体系结构和存储引擎
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../MySQL体系结构和存储引擎/MySQL体系结构.html">
+            
+                <a href="../MySQL体系结构和存储引擎/MySQL体系结构.html">
+            
+                    
+                    MySQL体系结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../MySQL体系结构和存储引擎/MySQL存储引擎.html">
+            
+                <a href="../MySQL体系结构和存储引擎/MySQL存储引擎.html">
+            
+                    
+                    MySQL存储引擎
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.3" data-path="../MySQL体系结构和存储引擎/一些术语.html">
+            
+                <a href="../MySQL体系结构和存储引擎/一些术语.html">
+            
+                    
+                    一些术语
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../InnoDB存储引擎.html">
+            
+                <a href="../InnoDB存储引擎.html">
+            
+                    
+                    InnoDB存储引擎
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../InnoDB存储引擎/InnoDB体系结构.html">
+            
+                <a href="../InnoDB存储引擎/InnoDB体系结构.html">
+            
+                    
+                    InnoDB体系结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../InnoDB存储引擎/Checkpoint技术.html">
+            
+                <a href="../InnoDB存储引擎/Checkpoint技术.html">
+            
+                    
+                    Checkpoint技术
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../InnoDB存储引擎/Master Thread 工作方式.html">
+            
+                <a href="../InnoDB存储引擎/Master Thread 工作方式.html">
+            
+                    
+                    Master Thread 工作方式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../InnoDB存储引擎/InnoDB关键特性.html">
+            
+                <a href="../InnoDB存储引擎/InnoDB关键特性.html">
+            
+                    
+                    InnoDB关键特性
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../InnoDB存储引擎/InnoDB关键特性/插入缓冲.html">
+            
+                <a href="../InnoDB存储引擎/InnoDB关键特性/插入缓冲.html">
+            
+                    
+                    插入缓冲
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../InnoDB存储引擎/InnoDB关键特性/两次写.html">
+            
+                <a href="../InnoDB存储引擎/InnoDB关键特性/两次写.html">
+            
+                    
+                    两次写
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../InnoDB存储引擎/InnoDB关键特性/自适应哈希索引.html">
+            
+                <a href="../InnoDB存储引擎/InnoDB关键特性/自适应哈希索引.html">
+            
+                    
+                    自适应哈希索引
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.4" data-path="../InnoDB存储引擎/InnoDB关键特性/异步IO.html">
+            
+                <a href="../InnoDB存储引擎/InnoDB关键特性/异步IO.html">
+            
+                    
+                    异步IO
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../文件.html">
+            
+                <a href="../文件.html">
+            
+                    
+                    文件
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../文件/参数文件.html">
+            
+                <a href="../文件/参数文件.html">
+            
+                    
+                    参数文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../文件/日志文件.html">
+            
+                <a href="../文件/日志文件.html">
+            
+                    
+                    日志文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../文件/表结构定义文件.html">
+            
+                <a href="../文件/表结构定义文件.html">
+            
+                    
+                    表结构定义文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../文件/InnoDB存储引擎文件.html">
+            
+                <a href="../文件/InnoDB存储引擎文件.html">
+            
+                    
+                    InnoDB存储引擎文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../表.html">
+            
+                <a href="../表.html">
+            
+                    
+                    表
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../表/索引组织表.html">
+            
+                <a href="../表/索引组织表.html">
+            
+                    
+                    索引组织表
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../表/InnoDB逻辑存储结构.html">
+            
+                <a href="../表/InnoDB逻辑存储结构.html">
+            
+                    
+                    InnoDB逻辑存储结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../表/InnoDB行记录格式.html">
+            
+                <a href="../表/InnoDB行记录格式.html">
+            
+                    
+                    InnoDB行记录格式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../表/InnoDB数据页结构.html">
+            
+                <a href="../表/InnoDB数据页结构.html">
+            
+                    
+                    InnoDB数据页结构
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../表/分区表.html">
+            
+                <a href="../表/分区表.html">
+            
+                    
+                    分区表
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../索引与算法.html">
+            
+                <a href="../索引与算法.html">
+            
+                    
+                    索引与算法
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../索引与算法/B+树索引.html">
+            
+                <a href="../索引与算法/B+树索引.html">
+            
+                    
+                    B+树索引
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../索引与算法/Cardinality值.html">
+            
+                <a href="../索引与算法/Cardinality值.html">
+            
+                    
+                    Cardinality值
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../索引与算法/B+树索引的使用.html">
+            
+                <a href="../索引与算法/B+树索引的使用.html">
+            
+                    
+                    B+树索引的使用
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.4" data-path="../索引与算法/哈希索引.html">
+            
+                <a href="../索引与算法/哈希索引.html">
+            
+                    
+                    哈希索引
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.5" data-path="../索引与算法/全文检索.html">
+            
+                <a href="../索引与算法/全文检索.html">
+            
+                    
+                    全文检索
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../锁.html">
+            
+                <a href="../锁.html">
+            
+                    
+                    锁
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="InnoDB中的锁.html">
+            
+                <a href="InnoDB中的锁.html">
+            
+                    
+                    InnoDB中的锁
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="锁的算法.html">
+            
+                <a href="锁的算法.html">
+            
+                    
+                    锁的算法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7.3" data-path="锁问题.html">
+            
+                <a href="锁问题.html">
+            
+                    
+                    锁问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >锁问题</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+                                <section class="normal markdown-section">
+                                
+                                <h3 id="&#x9501;&#x95EE;&#x9898;">&#x9501;&#x95EE;&#x9898;</h3>
+<p>&#x901A;&#x8FC7;&#x9501;&#x673A;&#x5236;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x4E8B;&#x52A1;&#x7684;&#x9694;&#x79BB;&#x6027;&#x8981;&#x6C42;&#xFF0C;&#x4F7F;&#x5F97;&#x4E8B;&#x52A1;&#x53EF;&#x4EE5;&#x5E76;&#x53D1;&#x5730;&#x5DE5;&#x4F5C;&#x3002;</p>
+<blockquote>
+<p>&#x611F;&#x89C9;&#x8FD9;&#x4E9B;&#x4E0D;&#x662F;&#x9501;&#x9020;&#x6210;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x800C;&#x662F;&#x5E76;&#x53D1;&#x95EE;&#x9898;&#x3002;</p>
+</blockquote>
+<h4 id="&#x810F;&#x8BFB;">&#x810F;&#x8BFB;</h4>
+<p>&#x810F;&#x8BFB;&#xFF08;<code>Dirty Read</code>&#xFF09;&#xFF0C;&#x6307;&#x8BFB;&#x53D6;&#x5230;&#x810F;&#x6570;&#x636E;&#x3002;</p>
+<p>&#x810F;&#x6570;&#x636E;&#xFF08;<code>Dirty Data</code>&#xFF09;&#xFF0C;&#x6307;&#x672A;&#x63D0;&#x4EA4;&#x7684;&#x6570;&#x636E;&#x3002;</p>
+<blockquote>
+<p>&#x8BFB;&#x5230;&#x672A;&#x63D0;&#x4EA4;&#x7684;&#x6570;&#x636E;</p>
+<p>&#x8FDD;&#x53CD;&#x4E86;&#x4E8B;&#x52A1;&#x7684;&#x9694;&#x79BB;&#x6027;</p>
+<p>&#x52A0;X&#x9501;</p>
+</blockquote>
+<h4 id="&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;">&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;</h4>
+<p>&#x6307;&#x5728;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5185;&#x591A;&#x6B21;&#x8BFB;&#x53D6;&#x540C;&#x4E00;&#x6570;&#x636E;&#xFF0C;&#x8BFB;&#x53D6;&#x5230;&#x7684;&#x6570;&#x636E;&#x4E0D;&#x4E00;&#x81F4;&#x3002;</p>
+<blockquote>
+<p>&#x8BFB;&#x53D6;&#x5230;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x5BF9;&#x6B64;&#x6570;&#x636E;&#x7684;&#x4FEE;&#x6539;</p>
+<p>&#x52A0;S&#x9501;</p>
+<p>&#x5728;<code>InnoDB</code>&#x5B58;&#x50A8;&#x5F15;&#x64CE;&#x4E2D;&#xFF0C;&#x901A;&#x8FC7;&#x4F7F;&#x7528;<code>Next-Key Lock</code>&#x7B97;&#x6CD5;&#x6765;&#x907F;&#x514D;&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;&#x7684;&#x95EE;&#x9898;&#xFF0C;</p>
+<p><span style="border-bottom:2px dashed yellow;">&#x5728;<code>MySQL</code>&#x5B98;&#x65B9;&#x6587;&#x6863;&#x4E2D;&#x5C06;&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;&#x95EE;&#x9898;&#x5B9A;&#x4E49;&#x4E3A;&#x5E7B;&#x8BFB;&#x3002;</span></p>
+<p><span style="border-bottom:2px dashed yellow;">&#x4E34;&#x952E;&#x9501;&#x662F;&#x8BB0;&#x5F55;&#x9501;+&#x95F4;&#x9699;&#x9501;&#xFF0C;&#x5929;&#x751F;&#x5C31;&#x89E3;&#x51B3;&#x4E86;&#x4E0D;&#x53EF;&#x91CD;&#x590D;&#x8BFB;&#x548C;&#x5E7B;&#x8BFB;&#x7684;&#x95EE;&#x9898;&#x3002;</span></p>
+</blockquote>
+<h4 id="&#x5E7B;&#x8BFB;">&#x5E7B;&#x8BFB;</h4>
+<p>&#x8BFB;&#x53D6;&#x5230;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x65B0;&#x589E;&#x7684;&#x6570;&#x636E;&#x3002;</p>
+<blockquote>
+<p>&#x52A0;&#x4E34;&#x952E;&#x9501;&#x89E3;&#x51B3;</p>
+</blockquote>
+<h4 id="&#x6B7B;&#x9501;">&#x6B7B;&#x9501;</h4>
+<p>&#x6B7B;&#x9501;&#x662F;&#x6307;&#x4E24;&#x4E2A;&#x4EE5;&#x4E0A;&#x7684;&#x4E8B;&#x52A1;&#x5728;&#x6267;&#x884C;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF0C;&#x56E0;&#x4E89;&#x593A;&#x9501;&#x8D44;&#x6E90;&#x800C;&#x9020;&#x6210;&#x7684;&#x4E00;&#x79CD;&#x4E92;&#x76F8;&#x7B49;&#x5F85;&#x7684;&#x73B0;&#x8C61;&#x3002;</p>
+<p>&#x6B7B;&#x9501;&#x7684;&#x5904;&#x7406;&#x65B9;&#x5F0F;</p>
+<ul>
+<li>&#x8D85;&#x65F6;</li>
+<li>&#x7B49;&#x5F85;&#x56FE;&#xFF08;<code>wait-for graph</code>&#xFF09;</li>
+</ul>
+<p><code>InnoDB</code>&#x91C7;&#x7528;&#x7684;&#x5C31;&#x662F;&#x7B49;&#x5F85;&#x56FE;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x7B49;&#x5F85;&#x56FE;&#x8981;&#x6C42;&#x6570;&#x636E;&#x4FDD;&#x5B58;&#x9501;&#x7684;&#x4FE1;&#x606F;&#x94FE;&#x8868;&#xFF0C;&#x4E8B;&#x52A1;&#x7B49;&#x5F85;&#x94FE;&#x8868;&#x3002;</p>
+<p>&#x901A;&#x8FC7;&#x4E0A;&#x8FF0;&#x94FE;&#x8868;&#x6784;&#x9020;&#x4E00;&#x5F20;&#x56FE;&#xFF0C;&#x82E5;&#x56FE;&#x4E2D;&#x5B58;&#x5728;&#x56DE;&#x8DEF;&#xFF0C;&#x5C31;&#x4EE3;&#x8868;&#x5B58;&#x5728;&#x6B7B;&#x9501;&#x3002;</p>
+<p>&#x7B49;&#x5F85;&#x56FE;&#x662F;&#x4E00;&#x79CD;&#x4E3B;&#x52A8;&#x68C0;&#x6D4B;&#x6B7B;&#x9501;&#x7684;&#x673A;&#x5236;&#xFF0C;&#x6BCF;&#x4E2A;&#x4E8B;&#x52A1;&#x8BF7;&#x6C42;&#x9501;&#x5E76;&#x53D1;&#x751F;&#x7B49;&#x5F85;&#x65F6;&#x90FD;&#x4F1A;&#x5224;&#x65AD;&#x662F;&#x5426;&#x5B58;&#x5728;&#x56DE;&#x8DEF;&#xFF0C;</p>
+<p>&#x82E5;&#x5B58;&#x5728;&#x5219;&#x6709;&#x6B7B;&#x9501;&#xFF0C;&#x901A;&#x5E38;<code>innoDB</code>&#x5B58;&#x50A8;&#x5F15;&#x64CE;&#x9009;&#x62E9;&#x56DE;&#x6EDA;undo&#x91CF;&#x6700;&#x5C0F;&#x7684;&#x4E8B;&#x52A1;&#x3002;</p>
+
+                                
+                                </section>
+                            
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="锁的算法.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 锁的算法">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"锁问题","level":"1.7.3","depth":2,"previous":{"title":"锁的算法","level":"1.7.2","depth":2,"path":"content/锁/锁的算法.md","ref":"content/锁/锁的算法.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-search","-sharing","chapter-fold","livereload"],"root":".","styles":{"website":"styles/website.css"},"pluginsConfig":{"chapter-fold":{},"livereload":{},"highlight":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"chenken","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"mysql笔记","language":"zh-hans","output.name":"site","gitbook":"3.2.3","description":"mysql相关知识笔记"},"file":{"path":"content/锁/锁问题.md","mtime":"2020-08-02T10:05:28.783Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-06T12:33:45.410Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-chapter-fold/chapter-fold.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
